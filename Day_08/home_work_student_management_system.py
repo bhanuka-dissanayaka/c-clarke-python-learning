@@ -2,7 +2,6 @@ students = []
 ages = []
 marks = []
 
-
 # Calculate Grade
 def calculate_grade(mark):
     if mark >= 75:
@@ -15,7 +14,6 @@ def calculate_grade(mark):
         return "S"
     else:
         return "F"
-
 
 # Add Student
 def add_student():
@@ -37,7 +35,6 @@ def add_student():
     marks.append(mark)
 
     print("Student added successfully!")
-
 
 # View Students
 def view_students():
@@ -99,6 +96,21 @@ def calculate_results():
         print("Grade  :", grade)
         print("Result :", result)
 
+# Get the minimum value in list
+def get_min(list):
+    min_val = list[0]
+    for i in list:
+        if min_val > i:
+            min_val = i
+    return min_val
+
+# Get the maximum value in list
+def get_max(list):
+    max_val = list[0]
+    for i in list:
+        if max_val < i:
+            max_val = i
+    return max_val
 
 # Show Statistics
 def show_statistics():
@@ -107,8 +119,8 @@ def show_statistics():
         return
 
     total_students = len(students)
-    highest_marks = max(marks)
-    lowest_marks = min(marks)
+    highest_marks = get_max(marks)
+    lowest_marks = get_min(marks)
     average_marks = sum(marks) / len(marks)
 
     passed_students = 0
@@ -140,28 +152,21 @@ while True:
     print("3. Search Student")
     print("4. Calculate Results")
     print("5. Show Statistics")
-    print("6. Exit")
-
+    print("0. Exit")
+    
     choice = input("Enter your choice: ")
-
     if choice == "1":
         add_student()
-
     elif choice == "2":
         view_students()
-
     elif choice == "3":
         search_student()
-
     elif choice == "4":
         calculate_results()
-
     elif choice == "5":
         show_statistics()
-
-    elif choice == "6":
+    elif choice == "0":
         print("Thank you for using the system!")
         break
-
     else:
         print("Invalid choice. Please try again.")
