@@ -49,7 +49,7 @@ def search_order():
             print(f"Delivery Charge - {order["delivery_charge"]}")
             print(f"Delivery Status - {order["delivery_status"]}")
             return
-        print("Order not found")
+    print("Order not found")
 
 def change_status():
     order_id = int(input("Enter order Id : "))
@@ -79,9 +79,6 @@ while True:
         search_order()
     elif choice == "4":
         change_status()
-    elif choice == "5":
-        print("===============")
-        print(orders)
     elif choice == "0":
         print("Thank you for using the system!")
         break
