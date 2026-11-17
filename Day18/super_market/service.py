@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
-from Day18.super_market.models import SuperMarketError, Product, Customer, Order
+from Day18.super_market.models import SuperMarketError, Product, Customer, Order, OrderItem
 from Day18.super_market.repositories import ProductRepository, CustomerRepository, OrderRepository, \
     InMemoryCustomerRepository, InMemoryProductRepository, InMemoryOrderRepository
 
@@ -94,7 +94,7 @@ class SuperMarketService:
 
         return customer
 
-    def add_order(self, order_id: str, customer_id: str, customer_name: str) -> Order:
+    def add_order(self, order_id: str, customer_id: str, customer_name: str, order_item_list:List[OrderItem]) -> Order:
 
         if self.order_repository.get_by_id(order_id=order_id) is not None:
             raise SuperMarketError("Order already exists")
@@ -103,6 +103,8 @@ class SuperMarketService:
             raise SuperMarketError("Customer not registered")
 
         order = Order(order_id=order_id,customer_id=customer_id,customer_name=customer_name)
+        for order_item in order_item_list:
+            order.add_item(item=order_item)
         self.order_repository.add_order(order=order)
 
         return order

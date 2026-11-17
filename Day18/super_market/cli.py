@@ -1,10 +1,11 @@
-from Day18.super_market.models import SuperMarketError
+from Day18.super_market.models import SuperMarketError, OrderItem
 from Day18.super_market.repositories import InMemoryCustomerRepository, InMemoryProductRepository, \
-    InMemoryOrderRepository
+    InMemoryOrderRepository, FileBasedProductRepository
 from Day18.super_market.service import SuperMarketService
 
 supermarket_service = SuperMarketService(
-    product_repository=InMemoryProductRepository(),
+    # product_repository=InMemoryProductRepository(),
+    product_repository=FileBasedProductRepository(),
     customer_repository=InMemoryCustomerRepository(),
     order_repository=InMemoryOrderRepository()
 )
@@ -78,12 +79,40 @@ def update_customer():
     phone_no = input("Enter Phone NO: ").strip()
     supermarket_service.update_customer(cus_id=cus_id,name=name,email=email,phone_no=phone_no)
 
+
+def add_order_item():
+    order_items = []
+    product_list = supermarket_service.list_all_products()
+    for product in product_list:
+        print(f"\nProduct ID: {product.product_id} | Name: {product.name}")
+    print("to exist : 0")
+    while  True:
+        choice = input("Enter Product Id: ")
+        quantity = int(input("Enter Quantity: "))
+        if choice=="0":
+            break
+        product = supermarket_service.get_product_by_id(choice)
+        order_item = OrderItem(
+            product_id=product.product_id,
+            product_name=product.name,
+            quantity=quantity,
+            unit_price=product.price
+        )
+        order_items.append(order_item)
+    return order_items
+
 def add_order():
 
     order_id = input("\nEnter Order ID: ").strip()
     customer_id = input("Enter Customer ID: ").strip()
     cus_name = input("Enter Customer Name: ").strip().title()
-    supermarket_service.add_order(order_id=order_id,customer_id=customer_id,customer_name=cus_name)
+    order_items_list = add_order_item()
+    supermarket_service.list_all_products()
+    supermarket_service.add_order(order_id=order_id,customer_id=customer_id,customer_name=cus_name,order_item_list=order_items_list)
+
+
+
+
 
 def list_all_orders():
 

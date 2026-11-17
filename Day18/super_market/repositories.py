@@ -64,6 +64,8 @@ class OrderRepository(ABC):
         pass
 
 
+
+
 class InMemoryProductRepository(ProductRepository):
 
     def __init__(self):
@@ -135,6 +137,52 @@ class InMemoryOrderRepository(OrderRepository):
 
     def list_all_orders(self) -> List[Order]:
         return list(self.__orders.values())
+
+class FileBasedProductRepository(ProductRepository):
+    def __init__(self,filename:str = "product.txt"):
+        self.filename = filename
+        self.__products:Dict[str, Product] = {}
+        self.load()
+
+    def load(self):
+        try:
+            with open(self.filename, "r") as f:
+                for line in f:
+                    product_details = line.strip().split(",")
+                    product_id = product_details[0]
+                    name = product_details[1]
+                    price = float(product_details[2])
+                    quantity = int(product_details[3])
+                    product = Product(product_id, name, price, quantity)
+                    self.__products[product_id] = product
+        except (FileNotFoundError,TypeError) as e:
+            print(e)
+
+    def save(self):
+        with open(self.filename, "w") as f:
+            for product in self.__products.values():
+                f.write(f"{product.product_id},{product.name},{product.price},{product.quantity}\n")
+
+    def add_product(self, product: Product) -> None:
+        self.__products[product.product_id] = product
+        self.save()
+
+
+    def update_product(self, product: Product) -> None:
+
+        if self.__products.get(product.product_id) is None:
+            raise SuperMarketError("Product does not exists")
+
+        self.__products[product.product_id] = product
+        self.save()
+
+
+    def get_by_id(self, product_id: str) -> Optional[Product]:
+        return self.__products.get(product_id)
+
+    def list_all_products(self) -> List[Product]:
+        return list(self.__products.values())
+
 
 
 if __name__ == "__main__":
